@@ -27,7 +27,14 @@
         var trailX = [];
         var trailY = [];
         var moveInt = setInterval(snakeInterval, 100);
+        
+        var eatX = [];
+        var eatY = [];
+        var eatSize = gridSize / 2;
+        var eatAmt = 1;
 
+        var actSwitch = true;
+        var eats = new eats();
         var snake = new snake();
 
         function setup() {
@@ -54,10 +61,14 @@
             if (trailY.length > snakeBodyAmt + 1) {
                 trailY.pop();
             }
-            snake.move();
-            snake.head();
-            snake.body();
-
+            
+            if (actSwitch === true && snakeDirection !== -1) {
+              eats.activate();
+              snake.move();
+              snake.head();
+              snake.body();
+            }
+            
             for (var y = 0; y < cellCountY; y++) { //show grid
                 for (var x = 0; x < cellCountX; x++) {
                     stroke(200);
@@ -66,7 +77,6 @@
                     rect(arrX[x], arrY[y], gridSize, gridSize);
                 }
             }
-            document.getElementById('dump').innerHTML = snakeBodyX;
         }
 
         function snake() {
@@ -101,14 +111,46 @@
             };
             this.body = function () {
                 stroke(0);
-                strokeWeight(0.5);
+                strokeWeight(1);
                 fill(20, 255, 20);
                 for (var num = 0; num < snakeBodyAmt; num++) {
                     var x = arrX[snakeBodyX[num]] + magicalCenterer;
                     var y = arrY[snakeBodyY[num]] + magicalCenterer;
+                    if (snake.x === x && snake.y === y && num > 0) {
+                      actSwitch = false;
+                    }
                     rect(x, y, snakeSize - 1, snakeSize - 1);
                 }
             };
+        }
+        
+        function eats() {
+          this.activate = function() {
+            if (eatX.length < eatAmt) {
+              var x = Math.floor(Math.random() * cellCountX);
+              eatX.push(x);
+            }
+            if (eatY.length < eatAmt) {
+              var y = Math.floor(Math.random() * cellCountY);
+              eatY.push(y);
+            }
+            for (var l = 0; l < eatAmt; l++) {
+              this.x = arrX[eatX[l]] + magicalCenterer;
+              this.y = arrY[eatY[l]] + magicalCenterer;
+              if (this.x === snake.x && this.y === snake.y) {
+                eatX.splice(l, 1);
+                eatY.splice(l, 1);
+                snakeBodyAmt++;
+              } else {
+                stroke(0);
+                strokeWeight(1);
+                fill(255,255,20);
+                ellipseMode(CORNER);
+                ellipse(this.x, this.y, eatSize);
+                ellipseMode(CENTER);
+              }
+            }
+          };
         }
 
         function snakeInterval() {
