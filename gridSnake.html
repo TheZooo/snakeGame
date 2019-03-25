@@ -7,7 +7,7 @@
         var gridY = [];
         var arrX = [];
         var arrY = [];
-        var gridSize = 10;
+        var gridSize = 12;
         var cellCountX = 50;
         var cellCountY = 50;
         var w = (gridSize * cellCountX) + 1;
@@ -83,7 +83,7 @@
             this.move = function () {
                 this.x = arrX[snakeX] + magicalCenterer;
                 this.y = arrY[snakeY] + magicalCenterer;
-                if (snakeX > 0 || snakeX < cellCountX) {
+                if (snakeX >= 0 || snakeX <= cellCountX) {
                     if (keyIsDown(65) && snakeDirection !== 2) { //left
                         snakeDirection = 0;
                     }
@@ -91,7 +91,7 @@
                         snakeDirection = 2;
                     }
                 }
-                if (snakeY > 0 && snakeY < cellCountY) {
+                if (snakeY >= 0 && snakeY <= cellCountY) {
                     if (keyIsDown(87) && snakeDirection !== 3) { //up
                         snakeDirection = 1;
                     }
@@ -112,14 +112,14 @@
             this.body = function () {
                 stroke(0);
                 strokeWeight(1);
-                fill(20, 255, 20);
+                fill(50, 150, 50);
                 for (var num = 0; num < snakeBodyAmt; num++) {
                     var x = arrX[snakeBodyX[num]] + magicalCenterer;
                     var y = arrY[snakeBodyY[num]] + magicalCenterer;
                     if (snake.x === x && snake.y === y && num > 0) {
                       actSwitch = false;
                     }
-                    rect(x, y, snakeSize - 1, snakeSize - 1);
+                    rect(x, y, snakeSize, snakeSize);
                 }
             };
         }
