@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <script src="p5/p5.min.js"></script>
+    <script src="p5.min.js"></script>
     <script>
         var gridX = [];
         var gridY = [];
@@ -16,7 +16,6 @@
         var p = 0;
         var n = 0;
         var magicalCenterer = Math.ceil(gridSize / 4);
-
         var snakeX = 1;
         var snakeY = 1;
         var snakeDirection = 2; //0 left, 1 up, 2 right, 3 down
@@ -32,15 +31,14 @@
         var eatY = [];
         var eatSize = gridSize / 2;
         var eatAmt = 1;
-
-        var actSwitch = true;
+        var actSwitch = false;
+        var gameOver = false;
+        var points = 0;
         var eats = new eats();
         var snake = new snake();
-
         function setup() {
             createCanvas(w, h);
         }
-
         function draw() {
             background(220);
             for (i; i < h - 1; i += gridSize) { //setup position of grid
@@ -63,10 +61,14 @@
             }
             
             if (actSwitch === true && snakeDirection !== -1) {
+              document.getElementById('points').style.visibility = "visible";
               eats.activate();
               snake.move();
               snake.head();
               snake.body();
+            } else if (actSwitch === false && gameOver === true) {
+                document.getElementById('gameOverTitle').style.visibility = "visible";
+                document.getElementById('gameOverBttn').style.visibility = "visible";
             }
             
             for (var y = 0; y < cellCountY; y++) { //show grid
@@ -77,6 +79,19 @@
                     rect(arrX[x], arrY[y], gridSize, gridSize);
                 }
             }
+            
+            document.getElementById('points').style.left = w + 25;
+            document.getElementById('points').innerHTML = "Points: " + points;
+        }
+
+        function start() {
+            actSwitch = true;
+            document.getElementById("startTitle").style.visibility = "hidden";
+            document.getElementById("startBttn").style.visibility = "hidden";
+        }
+
+        function restart() {
+            location.href = "gridSnake.html";
         }
 
         function snake() {
@@ -101,6 +116,8 @@
                 }
                 if (snakeY < 0 || snakeY > cellCountY || snakeX < 0 || snakeX > cellCountX) {
                     snakeDirection = -1;
+                    actSwitch = false;
+                    gameOver = true;
                 }
             }
             this.head = function () {
@@ -118,6 +135,7 @@
                     var y = arrY[snakeBodyY[num]] + magicalCenterer;
                     if (snake.x === x && snake.y === y && num > 0) {
                       actSwitch = false;
+                      gameOver = true;
                     }
                     rect(x, y, snakeSize, snakeSize);
                 }
@@ -140,6 +158,7 @@
               if (this.x === snake.x && this.y === snake.y) {
                 eatX.splice(l, 1);
                 eatY.splice(l, 1);
+                points++;
                 snakeBodyAmt++;
               } else {
                 stroke(0);
@@ -152,7 +171,6 @@
             }
           };
         }
-
         function snakeInterval() {
             if (snakeDirection === 0) { //left
                 snakeX--;
@@ -180,18 +198,42 @@
         body {
             overflow: hidden;
         }
-
         canvas {
             position: absolute;
             left: 20px;
             top: 20px;
             z-index: -1;
         }
+        #points {
+            position: absolute;
+            user-select: none;
+            visibility: hidden;
+        }
+        .title {
+            position: absolute;
+            left: 32px;
+            top: 30px;
+        }
+        .bttnS {
+            position: absolute;
+            left: 32px;
+            top: 93px
+        }
+        #gameOverTitle {
+            visibility: hidden;
+        }
+        #gameOverBttn {
+            visibility: hidden;
+        }
     </style>
 </head>
 
 <body>
-    <p id="dump"></p>
+    <h1 id="points"></h1>
+    <h1 class="title" id="startTitle">Grid Snake</h1>
+    <button class="bttnS" onclick="start()" id="startBttn">Start Game</button>
+    <h1 class="title" id="gameOverTitle">You hit your head</h1>
+    <button class="bttnS" onclick="restart()" id="gameOverBttn">Restart Game</button>
 </body>
 
 </html>
