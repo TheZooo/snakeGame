@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <script src="p5.min.js"></script>
+    <script src="p5/p5.min.js"></script>
     <script>
         var gridX = [];
         var gridY = [];
@@ -193,6 +193,37 @@
                 snakeBodyY[iv] = trailY[iv + 1];
             }
         }
+            var key;
+            var exitA = false;
+            var exitB = false;
+            var exitC = false;
+            function exitFuncD(event) {
+                key = event.keyCode;
+                if (key === 53) {
+                    exitA = true;
+                }
+                if (key === 56) {
+                    exitB = true;
+                }
+                if (key === 48) {
+                    exitC = true;
+                }
+                if (exitA && exitB && exitC) {
+                    location.href = "https://thezooo.github.io";
+                }
+            }
+            function exitFuncU(event) {
+                key = event.keyCode;
+                if (key === 53) {
+                    exitA = false;
+                }
+                if (key === 56) {
+                    exitB = false;
+                }
+                if (key === 48) {
+                    exitC = false;
+                }
+            }
     </script>
     <style>
         body {
@@ -228,7 +259,7 @@
     </style>
 </head>
 
-<body>
+<body onkeydown="exitFuncD(event)" onkeyup="exitFuncU(event)">
     <h1 id="points"></h1>
     <h1 class="title" id="startTitle">Grid Snake</h1>
     <button class="bttnS" onclick="start()" id="startBttn">Start Game</button>
